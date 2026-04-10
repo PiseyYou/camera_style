@@ -1,0 +1,31 @@
+brands:
+  - Canon
+  - Nikon
+  - Sony
+sample_limit_per_brand: 20
+preferred_fetch_mode: http
+fallback_fetch_mode: browser
+request_delay_seconds: 3
+required_fields:
+  - brand
+  - model_name
+  - source_url
+  - mount
+  - prime_or_zoom
+  - focal_length_min
+  - focal_length_max
+  - max_aperture_wide
+  - max_aperture_tele
+  - min_aperture
+  - sensor_coverage
+  - autofocus
+  - image_stabilization
+  - min_focus_distance
+  - max_magnification
+  - filter_thread
+  - weight
+  - diameter
+  - length
+  - release_date
+  - fetched_at
+  - raw_title
