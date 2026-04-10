@@ -1,0 +1,45 @@
+fields:
+  brand:
+    type: string
+  model_name:
+    type: string
+  source_url:
+    type: string
+  mount:
+    type: string
+  prime_or_zoom:
+    type: string
+  focal_length_min:
+    type: number
+  focal_length_max:
+    type: number
+  max_aperture_wide:
+    type: number
+  max_aperture_tele:
+    type: number
+  min_aperture:
+    type: number
+  sensor_coverage:
+    type: string
+  autofocus:
+    type: boolean
+  image_stabilization:
+    type: boolean
+  min_focus_distance:
+    type: number
+  max_magnification:
+    type: number
+  filter_thread:
+    type: number
+  weight:
+    type: number
+  diameter:
+    type: number
+  length:
+    type: number
+  release_date:
+    type: string
+  fetched_at:
+    type: string
+  raw_title:
+    type: string
