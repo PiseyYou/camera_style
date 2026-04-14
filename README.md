@@ -1,149 +1,147 @@
-# Camera Style - Lens Data Analysis System
+# Camera Style - 镜头数据分析系统
 
-A comprehensive lens data collection and analysis platform that scrapes specifications from multiple sources, tracks prices, compares lenses, and provides intelligent recommendations.
+一个综合性的镜头数据采集与分析平台，从多个数据源抓取规格参数、追踪价格、对比镜头并提供智能推荐。
 
-## ✨ Features
+## ✨ 功能特性
 
-### Data Collection
-- **Real Web Scraping**: Uses Playwright to bypass 403 restrictions
-- **Multiple Data Sources**: DPReview, B&H Photo, and more
-- **Multi-Brand Support**: Canon, Nikon, Sony, Fujifilm, Panasonic, Olympus
-- **Comprehensive Specs**: Focal length, aperture, weight, dimensions, mount type, prices, and more
+### 数据采集
+- **真实网页抓取**：使用 Playwright 绕过 403 限制
+- **多数据源支持**：DPReview、B&H Photo 等
+- **多品牌支持**：佳能、尼康、索尼、富士、松下、奥林巴斯
+- **全面规格参数**：焦距、光圈、重量、尺寸、卡口类型、价格等
 
-### Data Analysis
-- **Smart Data Merging**: Automatically deduplicate and merge data from multiple sources
-- **Price Tracking**: Historical price analysis and trend detection
-- **Lens Comparison**: Side-by-side comparison with performance scoring
-- **Recommendation Engine**: Personalized lens recommendations based on your needs
-- **Interactive Dashboards**: Beautiful HTML reports and visualizations
+### 数据分析
+- **智能数据合并**：自动去重并合并多源数据
+- **价格追踪**：历史价格分析和趋势检测
+- **镜头对比**：并排对比与性能评分
+- **推荐引擎**：基于需求的个性化镜头推荐
+- **交互式仪表板**：精美的 HTML 报告和可视化
 
-## Quick Start
+## 快速开始
 
-### Option 1: Quick Demo (Recommended for First Time)
+### 方式一：快速演示（首次使用推荐）
 
 ```bash
-# Automatically scrape sample data and open preview
+# 自动抓取示例数据并打开预览
 ./demo_preview.sh
 ```
 
-### Option 2: Full Setup
+### 方式二：完整安装
 
 ```bash
-# 1. Install dependencies
+# 1. 安装依赖
 ./setup.sh
 
-# 2. Test the scraper
+# 2. 测试抓取器
 python3 test_real_scraper.py
 
-# 3. Scrape data
+# 3. 抓取数据
 python3 scripts/ingest/dpreview_run.py --brand Canon --limit 10
 
-# 4. Run complete analysis
+# 4. 运行完整分析
 python3 scripts/run_analysis.py
 
-# 5. Open dashboard
+# 5. 打开仪表板
 xdg-open reports/dashboard.html
 ```
 
-## 📊 Analysis Tools
+## 📊 分析工具
 
-### 1. Complete Analysis Pipeline
+### 1. 完整分析流程
 
-Run all analysis tools at once:
+一次运行所有分析工具：
 
 ```bash
 python3 scripts/run_analysis.py
 ```
 
-This will:
-- ✅ Merge data from all sources
-- ✅ Analyze price trends and find deals
-- ✅ Generate lens comparisons
-- ✅ Create personalized recommendations
-- ✅ Build interactive dashboard
+将会执行：
+- ✅ 合并所有来源的数据
+- ✅ 分析价格趋势并找出优惠
+- ✅ 生成镜头对比
+- ✅ 创建个性化推荐
+- ✅ 构建交互式仪表板
 
-**Output**: `reports/dashboard.html` - Your one-stop analysis hub
+**输出**：`reports/dashboard.html` - 您的一站式分析中心
 
-### 2. Individual Analysis Tools
+### 2. 独立分析工具
 
-#### Data Merging & Deduplication
+#### 数据合并与去重
 
 ```bash
 python3 scripts/analysis/merge_data.py
 ```
 
-- Combines data from DPReview, B&H Photo, etc.
-- Intelligent fuzzy matching to detect duplicates
-- Resolves conflicts using source priority
-- **Output**: `data/merged/merged_summary.csv`
+- 合并来自 DPReview、B&H Photo 等的数据
+- 智能模糊匹配检测重复项
+- 使用来源优先级解决冲突
+- **输出**：`data/merged/merged_summary.csv`
 
-#### Price Tracking & Trend Analysis
+#### 价格追踪与趋势分析
 
 ```bash
 python3 scripts/analysis/price_tracker.py
 ```
 
-- Tracks historical prices
-- Detects trends (increasing/decreasing/stable)
-- Finds best deals (discounts > 5%)
-- Calculates price volatility
-- **Output**: `reports/price_analysis.md`, `reports/price_trends.csv`
+- 追踪历史价格
+- 检测趋势（上涨/下跌/稳定）
+- 找出最佳优惠（折扣 > 5%）
+- 计算价格波动性
+- **输出**：`reports/price_analysis.md`、`reports/price_trends.csv`
 
-#### Lens Comparison
+#### 镜头对比
 
 ```bash
 python3 scripts/analysis/lens_comparator.py
 ```
 
-- Side-by-side specification comparison
-- Performance scoring:
-  - 🎒 Portability (weight, size)
-  - 🔄 Versatility (zoom range)
-  - 🌙 Low Light (aperture)
-  - 💰 Value (price vs features)
-- **Output**: `reports/lens_comparison.html`
+- 并排规格对比
+- 性能评分：
+  - 🎒 便携性（重量、尺寸）
+  - 🔄 多功能性（变焦范围）
+  - 🌙 弱光性能（光圈）
+  - 💰 性价比（价格 vs 功能）
+- **输出**：`reports/lens_comparison.html`
 
-#### Recommendation Engine
+#### 推荐引擎
 
 ```bash
 python3 scripts/analysis/lens_recommender.py
 ```
 
-- Personalized recommendations based on:
-  - Budget constraints
-  - Brand preferences
-  - Mount type
-  - Focal length needs
-  - Feature requirements
-- Pre-built profiles:
-  - ✈️ Travel Photography
-  - 👤 Portrait Photography
-  - 💵 Budget Friendly
-- **Output**: `reports/lens_recommendations.html`
+- 基于以下条件的个性化推荐：
+  - 预算限制
+  - 品牌偏好
+  - 卡口类型
+  - 焦距需求
+  - 功能要求
+- 预设配置：
+  - ✈️ 旅行摄影
+  - 👤 人像摄影
+  - 💵 预算友好
+- **输出**：`reports/lens_recommendations.html`
 
-### 3. Web Preview Interface
+### 3. 网页预览界面
 
-Browse all lenses with search and filters:
+浏览所有镜头，支持搜索和过滤：
 
 ```bash
 python3 scripts/generate_preview.py
 xdg-open reports/lens_preview.html
 ```
 
-**Features:**
-- 📊 Statistics dashboard
-- 🔍 Real-time search
-- 🏷️ Filter by brand/type
-- 📱 Responsive design
-- 🏷️ Category tabs (by brand, type)
-- 📱 Responsive design
-- 🎨 Beautiful card layout
+**功能：**
+- 📊 统计仪表板
+- 🔍 实时搜索
+- 🏷️ 按品牌/类型过滤
+- 📱 响应式设计
+- 🎨 精美卡片布局
 
-See [PREVIEW_GUIDE.md](PREVIEW_GUIDE.md) for detailed usage.
+详见 [PREVIEW_GUIDE.md](PREVIEW_GUIDE.md)
 
-### Example Output
+### 示例输出
 
-JSON format (`data/parsed/dpreview/canon-rf-24-70mm-f28.json`):
+JSON 格式（`data/parsed/dpreview/canon-rf-24-70mm-f28.json`）：
 
 ```json
 {
@@ -164,102 +162,102 @@ JSON format (`data/parsed/dpreview/canon-rf-24-70mm-f28.json`):
 }
 ```
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 camera_style/
 ├── scripts/
-│   ├── ingest/                    # Data collection
-│   │   ├── base_scraper.py        # Base scraper framework
-│   │   ├── dpreview_*.py          # DPReview scraper
-│   │   └── bhphoto_scraper.py     # B&H Photo scraper
-│   ├── analysis/                  # Data analysis
-│   │   ├── merge_data.py          # Data merging & deduplication
-│   │   ├── price_tracker.py       # Price tracking & trends
-│   │   ├── lens_comparator.py     # Lens comparison tool
-│   │   └── lens_recommender.py    # Recommendation engine
-│   ├── generate_preview.py        # Web preview generator
-│   └── run_analysis.py            # Complete analysis pipeline
+│   ├── ingest/                    # 数据采集
+│   │   ├── base_scraper.py        # 基础抓取框架
+│   │   ├── dpreview_*.py          # DPReview 抓取器
+│   │   └── bhphoto_scraper.py     # B&H Photo 抓取器
+│   ├── analysis/                  # 数据分析
+│   │   ├── merge_data.py          # 数据合并与去重
+│   │   ├── price_tracker.py       # 价格追踪与趋势
+│   │   ├── lens_comparator.py     # 镜头对比工具
+│   │   └── lens_recommender.py    # 推荐引擎
+│   ├── generate_preview.py        # 网页预览生成器
+│   └── run_analysis.py            # 完整分析流程
 ├── data/
-│   ├── raw/                       # Raw HTML pages
-│   ├── parsed/                    # Parsed JSON data
-│   └── merged/                    # Merged & deduplicated data
-├── reports/                       # Generated reports
-│   ├── dashboard.html             # Main dashboard
-│   ├── lens_preview.html          # Lens catalog
-│   ├── price_analysis.md          # Price analysis
-│   ├── lens_comparison.html       # Comparison reports
-│   └── lens_recommendations.html  # Recommendation reports
-├── tests/                         # Test files
-├── docs/                          # Documentation
-├── setup.sh                       # Setup script
-├── quickstart.sh                  # Quick start script
-├── demo_preview.sh                # Demo script
-└── requirements.txt               # Python dependencies
+│   ├── raw/                       # 原始 HTML 页面
+│   ├── parsed/                    # 解析后的 JSON 数据
+│   └── merged/                    # 合并与去重后的数据
+├── reports/                       # 生成的报告
+│   ├── dashboard.html             # 主仪表板
+│   ├── lens_preview.html          # 镜头目录
+│   ├── price_analysis.md          # 价格分析
+│   ├── lens_comparison.html       # 对比报告
+│   └── lens_recommendations.html  # 推荐报告
+├── tests/                         # 测试文件
+├── docs/                          # 文档
+├── setup.sh                       # 安装脚本
+├── quickstart.sh                  # 快速启动脚本
+├── demo_preview.sh                # 演示脚本
+└── requirements.txt               # Python 依赖
 ```
 
-## Troubleshooting
+## 故障排除
 
-### 403 Forbidden Errors
+### 403 禁止访问错误
 
-The scraper uses Playwright with a real browser to bypass 403 restrictions. If you still get 403 errors:
+抓取器使用 Playwright 真实浏览器来绕过 403 限制。如果仍然遇到 403 错误：
 
-1. Increase the delay: Edit `dpreview_fetch.py` and increase `wait_seconds`
-2. Check if DPReview has updated their anti-bot measures
-3. Try using a different user agent
+1. 增加延迟：编辑 `dpreview_fetch.py` 并增加 `wait_seconds`
+2. 检查 DPReview 是否更新了反爬虫措施
+3. 尝试使用不同的 user agent
 
-### Missing Data
+### 数据缺失
 
-If parsed data is incomplete:
+如果解析的数据不完整：
 
-1. Check the raw HTML file in `data/raw/dpreview/`
-2. DPReview may have changed their HTML structure
-3. Update the CSS selectors in `dpreview_parser.py`
+1. 检查 `data/raw/dpreview/` 中的原始 HTML 文件
+2. DPReview 可能已更改其 HTML 结构
+3. 更新 `dpreview_parser.py` 中的 CSS 选择器
 
-### Playwright Installation Issues
+### Playwright 安装问题
 
 ```bash
-# Reinstall Playwright browsers
+# 重新安装 Playwright 浏览器
 python3 -m playwright install --force chromium
 
-# Check Playwright installation
+# 检查 Playwright 安装
 python3 -m playwright --version
 ```
 
-## 🎯 Use Cases
+## 🎯 使用场景
 
-### For Photographers
+### 摄影师
 
-- **Research**: Compare specifications across multiple lenses
-- **Shopping**: Track prices and find the best deals
-- **Decision Making**: Get personalized recommendations based on your needs
-- **Budget Planning**: Analyze price trends to time your purchase
+- **研究**：对比多个镜头的规格参数
+- **购物**：追踪价格并找到最佳优惠
+- **决策**：根据需求获得个性化推荐
+- **预算规划**：分析价格趋势以选择购买时机
 
-### For Developers
+### 开发者
 
-- **Data Source**: Clean, structured lens data in JSON/CSV format
-- **API Integration**: Build applications using the scraped data
-- **Machine Learning**: Train models on lens specifications and prices
-- **Market Analysis**: Analyze photography equipment market trends
+- **数据源**：干净、结构化的 JSON/CSV 格式镜头数据
+- **API 集成**：使用抓取的数据构建应用
+- **机器学习**：基于镜头规格和价格训练模型
+- **市场分析**：分析摄影器材市场趋势
 
-### For Researchers
+### 研究人员
 
-- **Market Research**: Study pricing patterns and trends
-- **Product Analysis**: Compare technical specifications across brands
-- **Consumer Behavior**: Analyze lens popularity and preferences
-- **Data Visualization**: Create charts and graphs from the data
+- **市场研究**：研究定价模式和趋势
+- **产品分析**：跨品牌对比技术规格
+- **消费者行为**：分析镜头流行度和偏好
+- **数据可视化**：从数据创建图表和图形
 
-## 📚 Documentation
+## 📚 文档
 
-- **[README.md](README.md)** - This file (project overview)
-- **[USAGE_CN.md](USAGE_CN.md)** - 中文使用指南 (Chinese usage guide)
-- **[CHANGES.md](CHANGES.md)** - Mock vs Real comparison (详细对比)
-- **[SUMMARY.md](SUMMARY.md)** - Complete project summary (项目总结)
-- **[PREVIEW_GUIDE.md](PREVIEW_GUIDE.md)** - Web preview interface guide (预览界面指南)
+- **[README.md](README.md)** - 本文件（项目概览）
+- **[USAGE_CN.md](USAGE_CN.md)** - 中文使用指南
+- **[CHANGES.md](CHANGES.md)** - Mock vs Real 对比
+- **[SUMMARY.md](SUMMARY.md)** - 完整项目总结
+- **[PREVIEW_GUIDE.md](PREVIEW_GUIDE.md)** - 预览界面指南
 
-## 🔧 Advanced Usage
+## 🔧 高级用法
 
-### Custom Scraping
+### 自定义抓取
 
 ```python
 from scripts.ingest.bhphoto_scraper import BHPhotoScraper
@@ -271,7 +269,7 @@ for lens in lenses:
     print(f"{lens.model_name}: ${lens.current_price}")
 ```
 
-### Custom Recommendations
+### 自定义推荐
 
 ```python
 from scripts.analysis.lens_recommender import LensRecommender, UserRequirements
@@ -289,7 +287,7 @@ requirements = UserRequirements(
 recommendations = recommender.recommend(requirements, top_n=5)
 ```
 
-### Price Alerts
+### 价格提醒
 
 ```python
 from scripts.analysis.price_tracker import PriceTracker
@@ -298,143 +296,56 @@ tracker = PriceTracker()
 deals = tracker.find_best_deals(min_discount_pct=10)
 
 for deal in deals:
-    print(f"🔥 {deal['model_name']}: Save ${deal['savings']:.2f}!")
+    print(f"🔥 {deal['model_name']}: 节省 ${deal['savings']:.2f}!")
 ```
 
-## Data Quality
+## 数据质量
 
-### Current Status
+### 当前状态
 
-- ✓ Real network scraping (not mock data)
-- ✓ Playwright bypasses 403 restrictions
-- ✓ Saves raw HTML for re-parsing
-- ✓ Structured JSON output
-- ⚠ Limited to DPReview data availability
-- ⚠ Requires manual verification of accuracy
+- ✓ 真实网络抓取（非模拟数据）
+- ✓ Playwright 绕过 403 限制
+- ✓ 保存原始 HTML 以便重新解析
+- ✓ 结构化 JSON 输出
+- ⚠ 受限于 DPReview 数据可用性
+- ⚠ 需要手动验证准确性
 
-### Verification
+### 验证
 
-Always verify scraped data against manufacturer specifications:
+始终对照制造商规格验证抓取的数据：
 
-1. Check `reports/dpreview_manual_review.csv`
-2. Compare against official spec sheets
-3. Cross-reference with multiple sources
+1. 检查 `reports/dpreview_manual_review.csv`
+2. 与官方规格表对比
+3. 交叉引用多个来源
 
-## License
+## 许可证
 
-This tool is for educational and research purposes. Respect DPReview's terms of service and robots.txt. Do not overload their servers with excessive requests.
+本工具仅用于教育和研究目的。请尊重 DPReview 的服务条款和 robots.txt。不要用过多请求使其服务器过载。
 
-## Contributing
+## 贡献
 
-Contributions welcome! Please:
+欢迎贡献！请：
 
-1. Follow the existing code structure
-2. Add tests for new features
-3. Update documentation
-4. Verify data accuracy
+1. 遵循现有代码结构
+2. 为新功能添加测试
+3. 更新文档
+4. 验证数据准确性
 
-## 🆕 Advanced Features
+## 更新日志
 
-### Data Source Expansion
+### 2026-04-14 - 真实抓取器实现
 
-The system now supports multiple data sources:
+- ✓ 用真实 Playwright 抓取器替换模拟数据
+- ✓ 添加 403 绕过功能
+- ✓ 实现真实网络请求
+- ✓ 添加全面错误处理
+- ✓ 创建安装和测试脚本
 
-- **DPReview**: Technical specifications and reviews
-- **B&H Photo**: Current prices and availability
-- **Adorama**: Alternative pricing (coming soon)
-- **Manufacturer Sites**: Official specifications (coming soon)
+### 2026-04-14 - 高级功能
 
-### Data Analysis Tools
-
-#### 1. Data Merging & Deduplication
-
-Automatically merge data from multiple sources and remove duplicates:
-
-```bash
-python3 scripts/analysis/merge_data.py
-```
-
-Output: `data/merged/merged_summary.csv`
-
-#### 2. Price Tracking & Trend Analysis
-
-Track price changes over time and find the best deals:
-
-```bash
-python3 scripts/analysis/price_tracker.py
-```
-
-Features:
-- Historical price tracking
-- Price trend analysis
-- Best deals finder
-- Price volatility metrics
-
-Output: `reports/price_analysis.md`, `reports/price_trends.csv`
-
-#### 3. Lens Comparison Tool
-
-Compare multiple lenses side-by-side:
-
-```bash
-python3 scripts/analysis/lens_comparator.py
-```
-
-Features:
-- Specification comparison
-- Performance scores (portability, versatility, low-light, value)
-- Interactive HTML reports
-
-Output: `reports/lens_comparison.html`
-
-#### 4. Recommendation System
-
-Get personalized lens recommendations based on your needs:
-
-```bash
-python3 scripts/analysis/lens_recommender.py
-```
-
-Features:
-- Budget-based filtering
-- Use-case specific recommendations
-- Scoring algorithm
-- Multiple recommendation profiles
-
-Output: `reports/lens_recommendations.html`
-
-### 🚀 Run Complete Analysis Pipeline
-
-Run all analysis tools in one command:
-
-```bash
-python3 scripts/run_analysis.py
-```
-
-This will:
-1. Merge data from all sources
-2. Analyze price trends
-3. Generate lens comparisons
-4. Create recommendations for different use cases
-5. Build a comprehensive dashboard
-
-Output: `reports/dashboard.html` (open this to see everything)
-
-## Changelog
-
-### 2026-04-14 - Real Scraper Implementation
-
-- ✓ Replaced mock fixtures with real Playwright scraper
-- ✓ Added 403 bypass functionality
-- ✓ Implemented real network requests
-- ✓ Added comprehensive error handling
-- ✓ Created setup and test scripts
-
-### 2026-04-14 - Advanced Features
-
-- ✓ Added B&H Photo scraper
-- ✓ Implemented data merging and deduplication
-- ✓ Created price tracking system
-- ✓ Built lens comparison tool
-- ✓ Developed recommendation engine
-- ✓ Generated interactive dashboards
+- ✓ 添加 B&H Photo 抓取器
+- ✓ 实现数据合并和去重
+- ✓ 创建价格追踪系统
+- ✓ 构建镜头对比工具
+- ✓ 开发推荐引擎
+- ✓ 生成交互式仪表板
