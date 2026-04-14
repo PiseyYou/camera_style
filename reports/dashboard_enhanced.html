@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lens Analysis Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        .lang-btn:hover {
+            background: #5568d3;
+        }
+        .lang-btn.active {
+            background: #764ba2;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .action-btn {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            background: #667eea;
+            color: white;
+        }
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .action-btn .icon {
+            font-size: 2.5em;
+        }
+        .action-btn .label {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .action-btn .desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Message Box */
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            max-width: 400px;
+            z-index: 10000;
+        }
+        .message-box.success {
+            border-left: 4px solid #27ae60;
+        }
+        .message-box.error {
+            border-left: 4px solid #e74c3c;
+        }
+        .message-box.active {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Stats and other sections remain the same */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .link-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+        .link-card:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Lens Cards */
+        .lens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .lens-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .lens-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .lens-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+        }
+        .lens-image.canon { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .lens-image.nikon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .lens-image.sony { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .lens-info {
+            padding: 20px;
+        }
+        .lens-brand {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .lens-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .lens-specs {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.6;
+        }
+        .lens-spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-btn" onclick="switchLang('en')">English</button>
+            </div>
+            <h1 data-zh="📊 镜头分析仪表盘" data-en="📊 Lens Analysis Dashboard">📊 Lens Analysis Dashboard</h1>
+            <p class="subtitle" data-zh="交互式镜头数据分析与推荐" data-en="Interactive lens data analysis and recommendations">Interactive lens data analysis and recommendations</p>
+        </header>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn" onclick="runScraper()">
+                <div class="icon">🔄</div>
+                <div class="label" data-zh="抓取数据" data-en="Scrape Data">Scrape Data</div>
+                <div class="desc" data-zh="获取新的镜头数据" data-en="Fetch new lens data">Fetch new lens data</div>
+            </button>
+
+            <button class="action-btn" onclick="runMerge()">
+                <div class="icon">🔗</div>
+                <div class="label" data-zh="合并数据" data-en="Merge Data">Merge Data</div>
+                <div class="desc" data-zh="合并所有数据源" data-en="Combine all sources">Combine all sources</div>
+            </button>
+
+            <button class="action-btn" onclick="runPriceAnalysis()">
+                <div class="icon">💰</div>
+                <div class="label" data-zh="价格分析" data-en="Price Analysis">Price Analysis</div>
+                <div class="desc" data-zh="追踪价格趋势" data-en="Track price trends">Track price trends</div>
+            </button>
+
+            <button class="action-btn" onclick="runComparison()">
+                <div class="icon">🔍</div>
+                <div class="label" data-zh="镜头对比" data-en="Compare Lenses">Compare Lenses</div>
+                <div class="desc" data-zh="并排对比" data-en="Side-by-side comparison">Side-by-side comparison</div>
+            </button>
+
+            <button class="action-btn" onclick="runRecommendations()">
+                <div class="icon">🎯</div>
+                <div class="label" data-zh="获取推荐" data-en="Get Recommendations">Get Recommendations</div>
+                <div class="desc" data-zh="个性化建议" data-en="Personalized suggestions">Personalized suggestions</div>
+            </button>
+
+            <button class="action-btn" onclick="runFullAnalysis()">
+                <div class="icon">⚡</div>
+                <div class="label" data-zh="完整分析" data-en="Full Analysis">Full Analysis</div>
+                <div class="desc" data-zh="运行所有功能" data-en="Run everything">Run everything</div>
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-lenses">-</div>
+                <div class="stat-label" data-zh="总镜头数" data-en="Total Lenses">Total Lenses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-brands">-</div>
+                <div class="stat-label" data-zh="品牌数" data-en="Brands">Brands</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="prime-count">-</div>
+                <div class="stat-label" data-zh="定焦镜头" data-en="Prime Lenses">Prime Lenses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="zoom-count">-</div>
+                <div class="stat-label" data-zh="变焦镜头" data-en="Zoom Lenses">Zoom Lenses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avg-price">$-</div>
+                <div class="stat-label" data-zh="平均价格" data-en="Average Price">Average Price</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="deals-count">-</div>
+                <div class="stat-label" data-zh="活跃优惠" data-en="Active Deals">Active Deals</div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="section">
+            <h2 data-zh="📈 分析报告" data-en="📈 Analysis Reports">📈 Analysis Reports</h2>
+            <div class="links-grid">
+                <a href="price_analysis.md" class="link-card">
+                    <h3 data-zh="💰 价格分析" data-en="💰 Price Analysis">💰 Price Analysis</h3>
+                    <p data-zh="价格趋势和统计" data-en="Price trends and statistics">Price trends and statistics</p>
+                </a>
+                <a href="lens_data_table.html" class="link-card">
+                    <h3 data-zh="📊 数据表格" data-en="📊 Data Table">📊 Data Table</h3>
+                    <p data-zh="表格形式查看所有数据" data-en="View all data in table format">表格形式查看所有数据</p>
+                </a>
+                <a href="lens_catalog.html" class="link-card">
+                    <h3 data-zh="📷 镜头目录" data-en="📷 Lens Catalog">📷 Lens Catalog</h3>
+                    <p data-zh="浏览所有镜头" data-en="Browse all lenses">Browse all lenses</p>
+                </a>
+                <a href="comparison_24_70.html" class="link-card">
+                    <h3 data-zh="🔍 24-70mm 对比" data-en="🔍 24-70mm Comparison">🔍 24-70mm Comparison</h3>
+                    <p data-zh="对比 24-70mm 镜头" data-en="Compare 24-70mm lenses">Compare 24-70mm lenses</p>
+                </a>
+                <a href="comparison_50.html" class="link-card">
+                    <h3 data-zh="🔍 50mm 对比" data-en="🔍 50mm Comparison">🔍 50mm Comparison</h3>
+                    <p data-zh="对比 50mm 镜头" data-en="Compare 50mm lenses">Compare 50mm lenses</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="section">
+            <h2 data-zh="🎯 推荐系统" data-en="🎯 Recommendations">🎯 Recommendations</h2>
+            <div class="links-grid">
+                <a href="recommendations_travel.html" class="link-card">
+                    <h3>✈️ Travel Photography</h3>
+                    <p>Lightweight, versatile lenses</p>
+                </a>
+                <a href="recommendations_portrait.html" class="link-card">
+                    <h3>👤 Portrait Photography</h3>
+                    <p>Best for portrait work</p>
+                </a>
+                <a href="recommendations_budget.html" class="link-card">
+                    <h3>💵 Budget Friendly</h3>
+                    <p>Great lenses under $500</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Lens Gallery -->
+        <div class="section">
+            <h2 data-zh="📷 镜头展示" data-en="📷 Lens Gallery">📷 Lens Gallery</h2>
+            <p data-zh="共 <span id='gallery-count'>0</span> 个镜头" data-en="Total <span id='gallery-count'>0</span> lenses" style="color: #666; margin-bottom: 1rem;">共 <span id='gallery-count'>0</span> 个镜头</p>
+            <div class="lens-grid" id="lens-gallery">
+                <!-- Lens cards will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h2 id="loading-title">Processing...</h2>
+            <p id="loading-message">Please wait</p>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div class="message-box" id="message">
+        <h3 id="message-title"></h3>
+        <p id="message-text"></p>
+    </div>
+
+    <script>
+        // API base URL (change if server is on different host/port)
+        const API_BASE = window.location.origin;
+
+        // Show loading overlay
+        function showLoading(title, message) {
+            document.getElementById('loading-title').textContent = title;
+            document.getElementById('loading-message').textContent = message;
+            document.getElementById('loading').classList.add('active');
+
+            // Disable all buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+
+            // Enable all buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.disabled = false;
+            });
+        }
+
+        // Show message
+        function showMessage(title, text, type = 'success') {
+            const messageBox = document.getElementById('message');
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-text').textContent = text;
+
+            messageBox.className = 'message-box active ' + type;
+
+            setTimeout(() => {
+                messageBox.classList.remove('active');
+            }, 5000);
+        }
+
+        // API call helper
+        async function callAPI(endpoint, loadingTitle, loadingMessage) {
+            showLoading(loadingTitle, loadingMessage);
+
+            try {
+                const response = await fetch(API_BASE + endpoint);
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.success) {
+                    // Show success message with output
+                    const output = data.output || 'Operation completed successfully';
+                    showMessage('✓ Success', output.substring(0, 200), 'success');
+
+                    // Reload page after 3 seconds to show updated data
+                    setTimeout(() => {
+                        console.log('Reloading page to show updated data...');
+                        location.reload();
+                    }, 3000);
+                } else {
+                    const error = data.error || 'Operation failed';
+                    showMessage('✗ Error', error.substring(0, 200), 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('✗ Error', 'Failed to connect to server: ' + error.message, 'error');
+            }
+        }
+
+        // Load stats from CSV
+        async function loadStats() {
+            try {
+                const response = await fetch('/data/merged/merged_summary.csv');
+                if (!response.ok) {
+                    // Try dpreview data if merged doesn't exist
+                    const response2 = await fetch('/data/parsed/dpreview/summary.csv');
+                    if (response2.ok) {
+                        const text = await response2.text();
+                        updateStatsFromCSV(text);
+                    }
+                    return;
+                }
+
+                const text = await response.text();
+                updateStatsFromCSV(text);
+            } catch (error) {
+                console.log('Could not load stats:', error);
+            }
+        }
+
+        function updateStatsFromCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length <= 1) return; // Only header or empty
+
+            const data = lines.slice(1); // Skip header
+            const lenses = data.map(line => {
+                const parts = line.split(',');
+                return {
+                    brand: parts[0],
+                    type: parts[3],
+                    price: parseFloat(parts[18]) || 0
+                };
+            });
+
+            // Update stats
+            document.getElementById('total-lenses').textContent = lenses.length;
+
+            const brands = new Set(lenses.map(l => l.brand));
+            document.getElementById('total-brands').textContent = brands.size;
+
+            const primeCount = lenses.filter(l => l.type === 'Prime').length;
+            document.getElementById('prime-count').textContent = primeCount;
+
+            const zoomCount = lenses.filter(l => l.type === 'Zoom').length;
+            document.getElementById('zoom-count').textContent = zoomCount;
+
+            const prices = lenses.filter(l => l.price > 0).map(l => l.price);
+            if (prices.length > 0) {
+                const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
+                document.getElementById('avg-price').textContent = '$' + Math.round(avgPrice);
+            } else {
+                document.getElementById('avg-price').textContent = 'N/A';
+            }
+
+            // Deals count - set to N/A since we don't have price data
+            document.getElementById('deals-count').textContent = 'N/A';
+
+            console.log('Stats updated:', lenses.length, 'lenses');
+        }
+
+        // Button handlers
+        function runScraper() {
+            const brand = prompt('Enter brand (Canon/Nikon/Sony):', 'Canon');
+            if (!brand) return;
+
+            const limit = prompt('Enter number of lenses to scrape:', '10');
+            if (!limit) return;
+
+            callAPI(
+                `/api/scrape/${brand}/${limit}`,
+                '🔄 Scraping Data',
+                `Fetching ${limit} ${brand} lenses...`
+            );
+        }
+
+        function runMerge() {
+            callAPI(
+                '/api/merge',
+                '🔗 Merging Data',
+                'Combining data from all sources...'
+            );
+        }
+
+        function runPriceAnalysis() {
+            callAPI(
+                '/api/price-analysis',
+                '💰 Analyzing Prices',
+                'Tracking price trends and finding deals...'
+            );
+        }
+
+        function runComparison() {
+            callAPI(
+                '/api/comparison',
+                '🔍 Comparing Lenses',
+                'Generating comparison reports...'
+            );
+        }
+
+        function runRecommendations() {
+            callAPI(
+                '/api/recommendations',
+                '🎯 Generating Recommendations',
+                'Creating personalized suggestions...'
+            );
+        }
+
+        function runFullAnalysis() {
+            if (!confirm('Run complete analysis? This may take several minutes.')) {
+                return;
+            }
+
+            callAPI(
+                '/api/full-analysis',
+                '⚡ Full Analysis',
+                'Running complete analysis pipeline...'
+            );
+        }
+
+        // Load stats on page load
+        window.addEventListener('load', () => {
+            console.log('Dashboard loaded, loading stats...');
+            loadStats();
+            loadLensGallery();
+            initLanguage();
+        });
+
+        // Language switching
+        let currentLang = localStorage.getItem('dashboardLang') || 'zh';
+
+        function initLanguage() {
+            // Set initial language to Chinese if not set
+            switchLang(currentLang);
+            }
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('dashboardLang', lang);
+
+            // Update all elements with data-zh and data-en attributes
+            document.querySelectorAll('[data-zh]').forEach(el => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = text;
+                    } else {
+                        el.textContent = text;
+                    }
+                }
+            });
+
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'zh' && btn.textContent === '中文') ||
+                    (lang === 'en' && btn.textContent === 'English')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Load lens gallery
+        async function loadLensGallery() {
+            try {
+                const response = await fetch('/data/merged/merged_summary.csv');
+                let csvText;
+
+                if (!response.ok) {
+                    const response2 = await fetch('/data/parsed/dpreview/summary.csv');
+                    if (response2.ok) {
+                        csvText = await response2.text();
+                    } else {
+                        return;
+                    }
+                } else {
+                    csvText = await response.text();
+                }
+
+                const lines = csvText.trim().split('\n');
+                if (lines.length <= 1) return;
+
+                const headers = lines[0].split(',');
+                const lenses = lines.slice(1).map(line => {
+                    const parts = line.split(',');
+                    return {
+                        brand: parts[0],
+                        model: parts[1],
+                        mount: parts[2],
+                        type: parts[3],
+                        focalMin: parts[4],
+                        focalMax: parts[5],
+                        aperture: parts[6]
+                    };
+                });
+
+                // Display all lenses
+                const gallery = document.getElementById('lens-gallery');
+                gallery.innerHTML = '';
+
+                lenses.forEach(lens => {
+                    const card = createLensCard(lens);
+                    gallery.appendChild(card);
+                });
+
+                // Update gallery count
+                const galleryCount = document.getElementById('gallery-count');
+                if (galleryCount) {
+                    galleryCount.textContent = lenses.length;
+                }
+
+            } catch (error) {
+                console.log('Could not load lens gallery:', error);
+            }
+        }
+
+        function createLensCard(lens) {
+            const card = document.createElement('div');
+            card.className = 'lens-card';
+
+            const brandClass = lens.brand.toLowerCase();
+            const icon = lens.type === 'Prime' ? '📸' : '🔭';
+
+            card.innerHTML = `
+                <div class="lens-image ${brandClass}">
+                    ${icon}
+                </div>
+                <div class="lens-info">
+                    <div class="lens-brand">${lens.brand}</div>
+                    <div class="lens-name">${lens.model}</div>
+                    <div class="lens-specs">
+                        <div class="lens-spec-item">
+                            <span>Mount:</span>
+                            <span>${lens.mount}</span>
+                        </div>
+                        <div class="lens-spec-item">
+                            <span>Type:</span>
+                            <span>${lens.type}</span>
+                        </div>
+                        <div class="lens-spec-item">
+                            <span>Focal Length:</span>
+                            <span>${lens.focalMin}${lens.focalMax !== lens.focalMin ? '-' + lens.focalMax : ''}mm</span>
+                        </div>
+                        <div class="lens-spec-item">
+                            <span>Aperture:</span>
+                            <span>f/${lens.aperture}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+    </script>
+</body>
+</html>

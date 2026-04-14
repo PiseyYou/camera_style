@@ -6,24 +6,10 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scripts.ingest.dpreview_discovery import extract_lens_links
+from scripts.ingest.dpreview_discovery import discover_lenses_for_brand
+from scripts.ingest.dpreview_fetch import fetch_url
 from scripts.ingest.dpreview_parser import parse_lens_detail
 
-FIXTURES_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "dpreview"
-INDEX_FIXTURES = {
-    "Canon": "index_canon.html",
-    "Nikon": "index_nikon.html",
-    "Sony": "index_sony.html",
-}
-DETAIL_FIXTURES = {
-    "/products/lenses/canon/canon-rf-24-70mm-f28": "detail_sample.html",
-    "/products/lenses/canon/canon-rf-50mm-f18": "detail_canon_rf_50mm_f18.html",
-    "/products/lenses/nikon/nikon-z-24-70mm-f4": "detail_nikon_z_24_70mm_f4.html",
-    "/products/lenses/nikon/nikon-z-50mm-f18": "detail_nikon_z_50mm_f18.html",
-    "/products/lenses/sony/sony-fe-24-70mm-f28": "detail_sony_fe_24_70mm_f28.html",
-    "/products/lenses/sony/sony-fe-50mm-f18": "detail_sony_fe_50mm_f18.html",
-}
-BASE_URL = "https://www.dpreview.com"
 SUMMARY_CSV_PATH = Path("data/parsed/dpreview/summary.csv")
 PILOT_SUMMARY_PATH = Path("reports/dpreview_pilot_summary.md")
 MANUAL_REVIEW_NOTE = "10 sample rows recorded in reports/dpreview_manual_review.csv"
@@ -89,20 +75,8 @@ def write_pilot_summary(summary: dict, path: Path = PILOT_SUMMARY_PATH) -> Path:
 
 
 def _slug_from_url(url: str) -> str:
+    """Extract slug from URL for filename."""
     return url.rstrip("/").split("/")[-1]
-
-
-def _read_fixture(name: str) -> str:
-    return (FIXTURES_DIR / name).read_text(encoding="utf-8")
-
-
-def _load_index_rows(brand: str, limit: int) -> list[dict]:
-    html = _read_fixture(INDEX_FIXTURES[brand])
-    return extract_lens_links(html, brand=brand)[:limit]
-
-
-def _load_detail_html(url: str) -> str:
-    return _read_fixture(DETAIL_FIXTURES[url])
 
 
 def _missing_rate(rows: list[dict], fields: list[str]) -> str:
@@ -124,7 +98,8 @@ def _merge_rows(existing_rows: list[dict], new_rows: list[dict]) -> list[dict]:
     return list(by_source.values())
 
 
-def _build_summary(rows: list[dict]) -> dict:
+def _build_summary(rows: list[dict], http_403_count: int = 0) -> dict:
+    """Build summary statistics from parsed rows."""
     brand_counts = {"Canon": 0, "Nikon": 0, "Sony": 0}
     for row in rows:
         brand = row.get("brand")
@@ -135,32 +110,70 @@ def _build_summary(rows: list[dict]) -> dict:
         "nikon_discovered": brand_counts["Nikon"],
         "sony_discovered": brand_counts["Sony"],
         "successful_fetches": len(rows),
-        "http_403_count": 0,
+        "http_403_count": http_403_count,
         "field_missing_rate": _missing_rate(rows, CORE_FIELDS),
         "manual_review_notes": MANUAL_REVIEW_NOTE,
     }
 
 
 def run_brand_pilot(brand: str, limit: int = 10) -> dict:
-    discovered = _load_index_rows(brand, limit)
-    parsed_rows = []
+    """
+    Run pilot scraping for a specific brand using real network requests.
 
-    for item in discovered:
-        html = _load_detail_html(item["url"])
-        row = parse_lens_detail(html)
-        row["source_url"] = f"{BASE_URL}{item['url']}"
-        row["raw_title"] = item["title"]
-        row["fetched_at"] = datetime.now(timezone.utc).isoformat()
-        parsed_rows.append(row)
-        save_outputs(_slug_from_url(item["url"]), html, row)
+    Args:
+        brand: Brand name (Canon, Nikon, Sony)
+        limit: Maximum number of lenses to scrape
+
+    Returns:
+        dict with scraping statistics
+    """
+    print(f"[{brand}] Discovering lens index page...")
+    discovered = discover_lenses_for_brand(brand, limit=limit)
+    print(f"[{brand}] Found {len(discovered)} lenses")
+
+    parsed_rows = []
+    http_403_count = 0
+
+    for idx, item in enumerate(discovered, 1):
+        url = item["url"]
+        print(f"[{brand}] ({idx}/{len(discovered)}) Fetching {url}...")
+
+        try:
+            result = fetch_url(url, mode="browser", delay=3)
+
+            if result["status_code"] == 403:
+                http_403_count += 1
+                print(f"  ⚠ HTTP 403 - skipping")
+                continue
+
+            if result["status_code"] != 200:
+                print(f"  ⚠ HTTP {result['status_code']} - skipping")
+                continue
+
+            html = result["html"]
+            row = parse_lens_detail(html)
+            row["source_url"] = url
+            row["raw_title"] = item["title"]
+            row["fetched_at"] = datetime.now(timezone.utc).isoformat()
+
+            parsed_rows.append(row)
+            save_outputs(_slug_from_url(url), html, row)
+            print(f"  ✓ Saved: {row.get('model_name', 'Unknown')}")
+
+        except Exception as e:
+            print(f"  ✗ Error: {e}")
+            continue
 
     combined_rows = _merge_rows(_read_summary_csv(), parsed_rows)
     write_summary_csv(combined_rows)
-    write_pilot_summary(_build_summary(combined_rows))
+    write_pilot_summary(_build_summary(combined_rows, http_403_count))
+
+    print(f"\n[{brand}] Complete: {len(parsed_rows)}/{len(discovered)} successful")
     return {
         "brand": brand,
         "discovered_count": len(discovered),
         "successful_fetches": len(parsed_rows),
+        "http_403_count": http_403_count,
         "rows": parsed_rows,
     }
 

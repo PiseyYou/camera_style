@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lens Recommendations</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .requirements {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .requirements h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .requirements ul {
+            list-style: none;
+            padding: 0;
+        }
+        .requirements li {
+            padding: 5px 0;
+            color: #666;
+        }
+        .recommendation {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+        }
+        .rank {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 50px;
+        }
+        .lens-info {
+            flex: 1;
+        }
+        .lens-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .lens-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .spec {
+            color: #666;
+        }
+        .spec strong {
+            color: #333;
+        }
+        .score {
+            text-align: right;
+            min-width: 100px;
+        }
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .score-label {
+            color: #999;
+            font-size: 0.9em;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Lens Recommendations</h1>
+
+    <div class="requirements">
+        <h2>Your Requirements</h2>
+        <ul>
+            <li>💰 Budget: Up to $2000</li>
+            <li>🌙 Max Aperture: f/2.8 or wider</li>
+            <li>⭐ Priorities: Low Light</li>
+
+        </ul>
+    </div>
+
+    <div class="recommendation">
+        <div class="rank">#1</div>
+        <div class="lens-info">
+            <div class="lens-title">Canon RF 50mm F1.8 STM</div>
+            <div class="lens-specs">
+                <div class="spec"><strong>Mount:</strong> Canon RF</div>
+                <div class="spec"><strong>Type:</strong> Prime</div>
+                <div class="spec"><strong>Focal Length:</strong> 50.0-50.0mm</div>
+                <div class="spec"><strong>Max Aperture:</strong> f/1.8</div>
+                <div class="spec"><strong>Weight:</strong> 160.0g</div>
+                <div class="spec"><strong>Price:</strong> $N/A</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="score-value">57</div>
+            <div class="score-label">Match Score</div>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <div class="rank">#2</div>
+        <div class="lens-info">
+            <div class="lens-title">Sony FE 50mm F1.8</div>
+            <div class="lens-specs">
+                <div class="spec"><strong>Mount:</strong> Sony E</div>
+                <div class="spec"><strong>Type:</strong> Prime</div>
+                <div class="spec"><strong>Focal Length:</strong> 50.0-50.0mm</div>
+                <div class="spec"><strong>Max Aperture:</strong> f/1.8</div>
+                <div class="spec"><strong>Weight:</strong> 186.0g</div>
+                <div class="spec"><strong>Price:</strong> $N/A</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="score-value">57</div>
+            <div class="score-label">Match Score</div>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <div class="rank">#3</div>
+        <div class="lens-info">
+            <div class="lens-title">Nikon Z 50mm F1.8 S</div>
+            <div class="lens-specs">
+                <div class="spec"><strong>Mount:</strong> Nikon Z</div>
+                <div class="spec"><strong>Type:</strong> Prime</div>
+                <div class="spec"><strong>Focal Length:</strong> 50.0-50.0mm</div>
+                <div class="spec"><strong>Max Aperture:</strong> f/1.8</div>
+                <div class="spec"><strong>Weight:</strong> 415.0g</div>
+                <div class="spec"><strong>Price:</strong> $N/A</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="score-value">54</div>
+            <div class="score-label">Match Score</div>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <div class="rank">#4</div>
+        <div class="lens-info">
+            <div class="lens-title">Sony FE 24-70mm F2.8 GM</div>
+            <div class="lens-specs">
+                <div class="spec"><strong>Mount:</strong> Sony E</div>
+                <div class="spec"><strong>Type:</strong> Zoom</div>
+                <div class="spec"><strong>Focal Length:</strong> 24.0-70.0mm</div>
+                <div class="spec"><strong>Max Aperture:</strong> f/2.8</div>
+                <div class="spec"><strong>Weight:</strong> 886.0g</div>
+                <div class="spec"><strong>Price:</strong> $N/A</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="score-value">50</div>
+            <div class="score-label">Match Score</div>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <div class="rank">#5</div>
+        <div class="lens-info">
+            <div class="lens-title">Canon RF 24-70mm F2.8 L IS USM</div>
+            <div class="lens-specs">
+                <div class="spec"><strong>Mount:</strong> Canon RF</div>
+                <div class="spec"><strong>Type:</strong> Zoom</div>
+                <div class="spec"><strong>Focal Length:</strong> 24.0-70.0mm</div>
+                <div class="spec"><strong>Max Aperture:</strong> f/2.8</div>
+                <div class="spec"><strong>Weight:</strong> 900.0g</div>
+                <div class="spec"><strong>Price:</strong> $N/A</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="score-value">50</div>
+            <div class="score-label">Match Score</div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>镜头数据目录 | Lens Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.05em;
+        }
+        .lang-toggle {
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .lang-btn.active {
+            background: white;
+            color: #667eea;
+        }
+        .controls {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+        .filter-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .stats {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            font-weight: 600;
+        }
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .lens-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .lens-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        .lens-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .lens-brand {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+        .lens-name {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        .lens-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .spec-label {
+            font-size: 0.8em;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .spec-value {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .lens-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .feature-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .feature-yes {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .feature-no {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .feature-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .lens-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.85em;
+            color: #999;
+        }
+        .type-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .type-prime {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .type-zoom {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1 data-zh="📷 镜头数据目录" data-en="📷 Lens Catalog">📷 镜头数据目录</h1>
+                <p class="subtitle" data-zh="实时加载 - 统一数据源" data-en="Real-time Loading - Unified Data Source">实时加载 - 统一数据源</p>
+            </div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-btn" onclick="switchLang('en')">English</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索镜头型号、卡口、焦距..." data-zh-placeholder="搜索镜头型号、卡口、焦距..." data-en-placeholder="Search model, mount, focal length..." onkeyup="filterLenses()">
+        </div>
+        <div class="filter-group" id="brandFilters">
+            <button class="filter-btn active" data-brand="all" onclick="filterByBrand('all')" data-zh="全部品牌" data-en="All Brands">全部品牌</button>
+        </div>
+        <div class="filter-group">
+            <button class="filter-btn active" data-type="all" onclick="filterByType('all')" data-zh="全部类型" data-en="All Types">全部类型</button>
+            <button class="filter-btn" data-type="Prime" onclick="filterByType('Prime')" data-zh="定焦" data-en="Prime">定焦</button>
+            <button class="filter-btn" data-type="Zoom" onclick="filterByType('Zoom')" data-zh="变焦" data-en="Zoom">变焦</button>
+        </div>
+        <a href="dashboard_enhanced.html" class="back-btn" data-zh="← 返回" data-en="← Back">← 返回</a>
+        <div class="stats">
+            <span data-zh="显示" data-en="Showing">显示</span> <span id="visibleCount">0</span> / <span id="totalCount">0</span> <span data-zh="支镜头" data-en="lenses">支镜头</span>
+        </div>
+    </div>
+
+    <div class="lens-grid" id="lensGrid">
+        <div class="loading">⏳ 加载中...</div>
+    </div>
+
+    <script>
+        let allLenses = [];
+        let currentBrand = 'all';
+        let currentType = 'all';
+        let currentLang = localStorage.getItem('catalogLang') || 'zh';
+
+        // Brand colors
+        const brandColors = {
+            'Canon': { bg: '#fee2e2', color: '#991b1b' },
+            'Nikon': { bg: '#fef3c7', color: '#92400e' },
+            'Sony': { bg: '#dbeafe', color: '#1e40af' },
+            'Sigma': { bg: '#e0e7ff', color: '#3730a3' },
+            'Tamron': { bg: '#fce7f3', color: '#831843' },
+            'Fujifilm': { bg: '#d1fae5', color: '#065f46' },
+            'Olympus': { bg: '#f3e8ff', color: '#6b21a8' },
+            'Panasonic': { bg: '#fef9c3', color: '#854d0e' },
+            'Leica': { bg: '#ffe4e6', color: '#9f1239' },
+            'Pentax': { bg: '#cffafe', color: '#155e75' }
+        };
+
+        // Load lenses from CSV
+        async function loadLenses() {
+            try {
+                // Try merged data first
+                let response = await fetch('/data/merged/merged_summary.csv');
+                let csvText;
+
+                if (!response.ok) {
+                    // Fallback to parsed data
+                    response = await fetch('/data/parsed/dpreview/summary.csv');
+                    csvText = await response.text();
+                } else {
+                    csvText = await response.text();
+                }
+
+                const lines = csvText.trim().split('\n');
+                if (lines.length <= 1) {
+                    document.getElementById('lensGrid').innerHTML = '<div class="loading">❌ 没有数据</div>';
+                    return;
+                }
+
+                const headers = lines[0].split(',');
+                allLenses = lines.slice(1).map(line => {
+                    const parts = line.split(',');
+                    return {
+                        brand: parts[0] || '',
+                        model_name: parts[1] || '',
+                        mount: parts[2] || '',
+                        type: parts[3] || '',
+                        focal_min: parts[4] || '',
+                        focal_max: parts[5] || '',
+                        aperture_wide: parts[6] || '',
+                        aperture_tele: parts[7] || '',
+                        min_aperture: parts[8] || '',
+                        sensor_coverage: parts[9] || '',
+                        autofocus: parts[10] || '',
+                        stabilization: parts[11] || '',
+                        min_focus: parts[12] || '',
+                        magnification: parts[13] || '',
+                        filter_thread: parts[14] || '',
+                        weight: parts[15] || '',
+                        diameter: parts[16] || '',
+                        length: parts[17] || '',
+                        release_date: parts[18] || ''
+                    };
+                });
+
+                // Generate brand filters
+                const brands = [...new Set(allLenses.map(l => l.brand))].sort();
+                const brandFilters = document.getElementById('brandFilters');
+                brands.forEach(brand => {
+                    const btn = document.createElement('button');
+                    btn.className = 'filter-btn';
+                    btn.setAttribute('data-brand', brand);
+                    btn.onclick = () => filterByBrand(brand);
+                    btn.textContent = brand;
+                    brandFilters.appendChild(btn);
+                });
+
+                // Render all lenses
+                renderLenses();
+                updateCounts();
+
+            } catch (error) {
+                console.error('Error loading lenses:', error);
+                document.getElementById('lensGrid').innerHTML = '<div class="loading">❌ 加载失败</div>';
+            }
+        }
+
+        function renderLenses() {
+            const grid = document.getElementById('lensGrid');
+            grid.innerHTML = '';
+
+            allLenses.forEach(lens => {
+                const card = createLensCard(lens);
+                grid.appendChild(card);
+            });
+
+            filterLenses();
+        }
+
+        function createLensCard(lens) {
+            const card = document.createElement('div');
+            card.className = 'lens-card';
+            card.setAttribute('data-brand', lens.brand);
+            card.setAttribute('data-type', lens.type);
+
+            const searchData = `${lens.model_name} ${lens.brand} ${lens.mount} ${lens.focal_min} ${lens.focal_max}`.toLowerCase();
+            card.setAttribute('data-search', searchData);
+
+            const brandStyle = brandColors[lens.brand] || { bg: '#f3f4f6', color: '#374151' };
+            const typeClass = lens.type === 'Prime' ? 'type-prime' : 'type-zoom';
+            const icon = lens.type === 'Prime' ? '📸' : '🔭';
+
+            const focalRange = lens.focal_min === lens.focal_max
+                ? `${lens.focal_min}mm`
+                : `${lens.focal_min}-${lens.focal_max}mm`;
+
+            const afText = lens.autofocus === 'Yes' ? '✓ 自动对焦' : '✗ 自动对焦';
+            const afClass = lens.autofocus === 'Yes' ? 'feature-yes' : 'feature-no';
+
+            const isText = lens.stabilization === 'Yes' ? '✓ 防抖' : '✗ 防抖';
+            const isClass = lens.stabilization === 'Yes' ? 'feature-yes' : 'feature-no';
+
+            card.innerHTML = `
+                <div class="lens-brand" style="background: ${brandStyle.bg}; color: ${brandStyle.color};">${lens.brand}</div>
+                <div class="lens-name">${icon} ${lens.model_name}</div>
+                <div class="lens-specs">
+                    <div class="spec-item">
+                        <div class="spec-label" data-zh="焦距" data-en="Focal">焦距</div>
+                        <div class="spec-value">${focalRange}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label" data-zh="光圈" data-en="Aperture">光圈</div>
+                        <div class="spec-value">f/${lens.aperture_wide}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label" data-zh="卡口" data-en="Mount">卡口</div>
+                        <div class="spec-value">${lens.mount}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label" data-zh="重量" data-en="Weight">重量</div>
+                        <div class="spec-value">${lens.weight}g</div>
+                    </div>
+                </div>
+                <div class="lens-features">
+                    <span class="feature-badge ${afClass}" data-zh="${afText}" data-en="${afText.replace('自动对焦', 'Autofocus')}">${afText}</span>
+                    <span class="feature-badge ${isClass}" data-zh="${isText}" data-en="${isText.replace('防抖', 'Stabilization')}">${isText}</span>
+                    <span class="feature-badge feature-info">${lens.sensor_coverage}</span>
+                </div>
+                <div class="lens-footer">
+                    <span class="type-badge ${typeClass}" data-zh="${lens.type === 'Prime' ? '定焦' : '变焦'}" data-en="${lens.type}">${lens.type === 'Prime' ? '定焦' : '变焦'}</span>
+                    <span data-zh="发布: ${lens.release_date}" data-en="Release: ${lens.release_date}">发布: ${lens.release_date}</span>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function filterByBrand(brand) {
+            currentBrand = brand;
+            document.querySelectorAll('[data-brand]').forEach(btn => {
+                if (btn.tagName === 'BUTTON') {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-brand') === brand) {
+                        btn.classList.add('active');
+                    }
+                }
+            });
+            filterLenses();
+        }
+
+        function filterByType(type) {
+            currentType = type;
+            document.querySelectorAll('[data-type]').forEach(btn => {
+                if (btn.tagName === 'BUTTON') {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-type') === type) {
+                        btn.classList.add('active');
+                    }
+                }
+            });
+            filterLenses();
+        }
+
+        function filterLenses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.lens-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const brand = card.getAttribute('data-brand');
+                const type = card.getAttribute('data-type');
+                const searchData = card.getAttribute('data-search');
+
+                const brandMatch = currentBrand === 'all' || brand === currentBrand;
+                const typeMatch = currentType === 'all' || type === currentType;
+                const searchMatch = searchTerm === '' || searchData.includes(searchTerm);
+
+                if (brandMatch && typeMatch && searchMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('visibleCount').textContent = visibleCount;
+        }
+
+        function updateCounts() {
+            document.getElementById('totalCount').textContent = allLenses.length;
+            document.getElementById('visibleCount').textContent = allLenses.length;
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('catalogLang', lang);
+
+            // Update all elements with data-zh and data-en attributes
+            document.querySelectorAll('[data-zh]').forEach(el => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = text;
+                    } else {
+                        el.textContent = text;
+                    }
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-' + lang + '-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
+            });
+
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Load on page load
+        window.addEventListener('load', () => {
+            loadLenses();
+            switchLang(currentLang);
+        });
+    </script>
+</body>
+</html>

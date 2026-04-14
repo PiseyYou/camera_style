@@ -1,0 +1,42 @@
+[
+  {
+    "timestamp": "2026-04-14T13:46:21.037774",
+    "command": "python3 scripts/run_analysis.py",
+    "output": "============================================================\n📊 Lens Data Analysis Pipeline\n============================================================\n\n[1/5] Merging data from all sources...\n  Total lenses before merge: 6\n  Total lenses after merge: 6\n✓ Saved 6 merged lenses to data/merged\n  ✓ Merged data saved\n\n[2/5] Analyzing price trends...\n✓ Price report generated: reports/price_analysis.md\n  Found 0 deals\n  ✓ Price analysis complete\n\n[3/5] Generating lens comparisons...\n✓ Comparison report"
+  },
+  {
+    "timestamp": "2026-04-14T13:47:14.638478",
+    "command": "python3 scripts/analysis/lens_comparator.py",
+    "output": "Comparing lenses...\n✓ Comparison report generated: reports/lens_comparison.html\n\n✓ Compared 2 lenses\n"
+  },
+  {
+    "timestamp": "2026-04-14T13:51:58.147769",
+    "command": "python3 scripts/analysis/lens_comparator.py",
+    "output": "Comparing lenses...\n✓ Comparison report generated: reports/lens_comparison.html\n\n✓ Compared 2 lenses\n"
+  },
+  {
+    "timestamp": "2026-04-14T13:52:08.229503",
+    "command": "python3 scripts/run_analysis.py",
+    "output": "============================================================\n📊 Lens Data Analysis Pipeline\n============================================================\n\n[1/5] Merging data from all sources...\n  Total lenses before merge: 6\n  Total lenses after merge: 6\n✓ Saved 6 merged lenses to data/merged\n  ✓ Merged data saved\n\n[2/5] Analyzing price trends...\n✓ Price report generated: reports/price_analysis.md\n  Found 0 deals\n  ✓ Price analysis complete\n\n[3/5] Generating lens comparisons...\n✓ Comparison report"
+  },
+  {
+    "timestamp": "2026-04-14T15:05:00.475025",
+    "command": "python3 scripts/analysis/lens_recommender.py",
+    "output": "Generating recommendations...\n✓ Recommendation report generated: reports/lens_recommendations.html\n\n🎯 Top 5 Recommendations:\n  1. Canon RF 50mm F1.8 STM (Score: 53)\n"
+  },
+  {
+    "timestamp": "2026-04-14T15:05:39.762579",
+    "command": "python3 scripts/analysis/lens_comparator.py",
+    "output": "Comparing lenses...\n✓ Comparison report generated: reports/lens_comparison.html\n\n✓ Compared 2 lenses\n"
+  },
+  {
+    "timestamp": "2026-04-14T15:07:10.448470",
+    "command": "python3 scripts/analysis/lens_recommender.py",
+    "output": "Generating recommendations...\n✓ Recommendation report generated: reports/lens_recommendations.html\n\n🎯 Top 5 Recommendations:\n  1. Canon RF 50mm F1.8 STM (Score: 53)\n"
+  },
+  {
+    "timestamp": "2026-04-14T15:07:18.855290",
+    "command": "python3 scripts/analysis/lens_recommender.py",
+    "output": "Generating recommendations...\n✓ Recommendation report generated: reports/lens_recommendations.html\n\n🎯 Top 5 Recommendations:\n  1. Canon RF 50mm F1.8 STM (Score: 53)\n"
+  }
+]

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lens Comparison</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .spec-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .score-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .score-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .score-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .score-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .score-value {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📷 Lens Comparison</h1>
+
+    <div class="score-section">
+
+        <div class="score-card">
+            <h3>RF 50mm F1.8 STM</h3>
+            <div>
+                <strong>Portability</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 100.0%"></div>
+                </div>
+                <div class="score-value">100.0/100</div>
+            </div>
+            <div>
+                <strong>Versatility</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 30%"></div>
+                </div>
+                <div class="score-value">30.0/100</div>
+            </div>
+            <div>
+                <strong>Low Light</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 85%"></div>
+                </div>
+                <div class="score-value">85.0/100</div>
+            </div>
+            <div>
+                <strong>Value</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 50%"></div>
+                </div>
+                <div class="score-value">50.0/100</div>
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea;">
+                <strong>Overall Score</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 64.5%"></div>
+                </div>
+                <div class="score-value" style="font-size: 1.1em; font-weight: bold;">
+                    64.5/100
+                </div>
+            </div>
+        </div>
+
+        <div class="score-card">
+            <h3>FE 50mm F1.8</h3>
+            <div>
+                <strong>Portability</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 97.625%"></div>
+                </div>
+                <div class="score-value">97.6/100</div>
+            </div>
+            <div>
+                <strong>Versatility</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 30%"></div>
+                </div>
+                <div class="score-value">30.0/100</div>
+            </div>
+            <div>
+                <strong>Low Light</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 85%"></div>
+                </div>
+                <div class="score-value">85.0/100</div>
+            </div>
+            <div>
+                <strong>Value</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 50%"></div>
+                </div>
+                <div class="score-value">50.0/100</div>
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea;">
+                <strong>Overall Score</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 64.025%"></div>
+                </div>
+                <div class="score-value" style="font-size: 1.1em; font-weight: bold;">
+                    64.0/100
+                </div>
+            </div>
+        </div>
+
+        <div class="score-card">
+            <h3>Z 50mm F1.8 S</h3>
+            <div>
+                <strong>Portability</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 84.90277777777777%"></div>
+                </div>
+                <div class="score-value">84.9/100</div>
+            </div>
+            <div>
+                <strong>Versatility</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 30%"></div>
+                </div>
+                <div class="score-value">30.0/100</div>
+            </div>
+            <div>
+                <strong>Low Light</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 85%"></div>
+                </div>
+                <div class="score-value">85.0/100</div>
+            </div>
+            <div>
+                <strong>Value</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 50%"></div>
+                </div>
+                <div class="score-value">50.0/100</div>
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea;">
+                <strong>Overall Score</strong>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: 61.480555555555554%"></div>
+                </div>
+                <div class="score-value" style="font-size: 1.1em; font-weight: bold;">
+                    61.5/100
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="comparison-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Specification</th>
+                    <th>RF 50mm F1.8 STM</th>
+                    <th>FE 50mm F1.8</th>
+                    <th>Z 50mm F1.8 S</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="spec-label">Brand</td>
+                    <td>Canon</td>
+                    <td>Sony</td>
+                    <td>Nikon</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Model</td>
+                    <td>RF 50mm F1.8 STM</td>
+                    <td>FE 50mm F1.8</td>
+                    <td>Z 50mm F1.8 S</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Mount</td>
+                    <td>Canon RF</td>
+                    <td>Sony E</td>
+                    <td>Nikon Z</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Type</td>
+                    <td>Prime</td>
+                    <td>Prime</td>
+                    <td>Prime</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Focal Length Min (mm)</td>
+                    <td>50.00</td>
+                    <td>50.00</td>
+                    <td>50.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Focal Length Max (mm)</td>
+                    <td>50.00</td>
+                    <td>50.00</td>
+                    <td>50.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Max Aperture (Wide)</td>
+                    <td>1.80</td>
+                    <td>1.80</td>
+                    <td>1.80</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Max Aperture (Tele)</td>
+                    <td>1.80</td>
+                    <td>1.80</td>
+                    <td>1.80</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Min Aperture</td>
+                    <td>22.00</td>
+                    <td>22.00</td>
+                    <td>16.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Weight (g)</td>
+                    <td>160.00</td>
+                    <td>186.00</td>
+                    <td>415.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Diameter (mm)</td>
+                    <td>69.20</td>
+                    <td>68.60</td>
+                    <td>76.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Length (mm)</td>
+                    <td>40.50</td>
+                    <td>59.50</td>
+                    <td>86.50</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Filter Thread (mm)</td>
+                    <td>43.00</td>
+                    <td>49.00</td>
+                    <td>62.00</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Min Focus Distance (m)</td>
+                    <td>0.30</td>
+                    <td>0.45</td>
+                    <td>0.40</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Max Magnification</td>
+                    <td>0.25</td>
+                    <td>0.14</td>
+                    <td>0.15</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Autofocus</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Image Stabilization</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Weather Sealing</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Current Price ($)</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="spec-label">Release Date</td>
+                    <td>2020-12-03</td>
+                    <td>2016-05-03</td>
+                    <td>2018-08-23</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

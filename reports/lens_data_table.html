@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>镜头数据表格 | Lens Data Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        .lang-btn:hover {
+            background: #5568d3;
+        }
+        .lang-btn.active {
+            background: #764ba2;
+            font-weight: bold;
+        }
+        .stats {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        tbody tr:hover {
+            background: #f5f7fa;
+        }
+        .brand-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: white;
+        }
+        .brand-canon { background: #ef4444; }
+        .brand-nikon { background: #f59e0b; }
+        .brand-sony { background: #3b82f6; }
+        .brand-sigma { background: #8b5cf6; }
+        .brand-tamron { background: #10b981; }
+        .brand-fujifilm { background: #ec4899; }
+        .brand-olympus { background: #06b6d4; }
+        .brand-panasonic { background: #f97316; }
+        .brand-leica { background: #dc2626; }
+        .brand-pentax { background: #84cc16; }
+        .type-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .type-prime {
+            background: #10b981;
+            color: white;
+        }
+        .type-zoom {
+            background: #8b5cf6;
+            color: white;
+        }
+        .yes { color: #10b981; font-weight: 600; }
+        .no { color: #ef4444; font-weight: 600; }
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-btn" onclick="switchLang('en')">English</button>
+            </div>
+            <h1 data-zh="📊 镜头数据表格" data-en="📊 Lens Data Table">📊 镜头数据表格</h1>
+            <p class="subtitle" data-zh="完整的镜头规格数据 - 31个镜头, 10个品牌" data-en="Complete lens specification data - 31 lenses, 10 brands">完整的镜头规格数据 - 31个镜头, 10个品牌</p>
+        </header>
+
+        <a href="/" class="back-btn" data-zh="← 返回仪表盘" data-en="← Back to Dashboard">← 返回仪表盘</a>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">31</div>
+                <div class="stat-label" data-zh="总镜头数" data-en="Total Lenses">总镜头数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10</div>
+                <div class="stat-label" data-zh="品牌数" data-en="Brands">品牌数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">19</div>
+                <div class="stat-label" data-zh="定焦镜头" data-en="Prime Lenses">定焦镜头</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">12</div>
+                <div class="stat-label" data-zh="变焦镜头" data-en="Zoom Lenses">变焦镜头</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-zh="品牌" data-en="Brand">品牌</th>
+                        <th data-zh="型号" data-en="Model">型号</th>
+                        <th data-zh="类型" data-en="Type">类型</th>
+                        <th data-zh="卡口" data-en="Mount">卡口</th>
+                        <th data-zh="焦距" data-en="Focal Length">焦距</th>
+                        <th data-zh="光圈" data-en="Aperture">光圈</th>
+                        <th data-zh="重量" data-en="Weight">重量</th>
+                        <th data-zh="对焦" data-en="AF">对焦</th>
+                        <th data-zh="防抖" data-en="IS">防抖</th>
+                        <th data-zh="发布日期" data-en="Release">发布日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="brand-badge brand-canon">Canon</span></td>
+                        <td><strong>RF 24-70mm F2.8 L IS USM</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Canon RF</td>
+                        <td>24.0-70.0mm</td>
+                        <td>f/2.8</td>
+                        <td>900.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2019-08-28</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-canon">Canon</span></td>
+                        <td><strong>RF 50mm F1.8 STM</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon RF</td>
+                        <td>50.0mm</td>
+                        <td>f/1.8</td>
+                        <td>160.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2020-12-03</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-nikon">Nikon</span></td>
+                        <td><strong>Z 24-70mm F4 S</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Nikon Z</td>
+                        <td>24.0-70.0mm</td>
+                        <td>f/4.0</td>
+                        <td>500.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-08-23</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-nikon">Nikon</span></td>
+                        <td><strong>Z 50mm F1.8 S</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Nikon Z</td>
+                        <td>50.0mm</td>
+                        <td>f/1.8</td>
+                        <td>415.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-08-23</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sony">Sony</span></td>
+                        <td><strong>FE 24-70mm F2.8 GM</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Sony E</td>
+                        <td>24.0-70.0mm</td>
+                        <td>f/2.8</td>
+                        <td>886.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2016-02-03</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sony">Sony</span></td>
+                        <td><strong>FE 50mm F1.8</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Sony E</td>
+                        <td>50.0mm</td>
+                        <td>f/1.8</td>
+                        <td>186.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2016-05-03</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-canon">Canon</span></td>
+                        <td><strong>RF 85mm F1.2 L USM</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon RF</td>
+                        <td>85.0mm</td>
+                        <td>f/1.2</td>
+                        <td>1195.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2019-05-09</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-canon">Canon</span></td>
+                        <td><strong>RF 35mm F1.8 IS STM</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon RF</td>
+                        <td>35.0mm</td>
+                        <td>f/1.8</td>
+                        <td>305.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2018-09-05</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-nikon">Nikon</span></td>
+                        <td><strong>Z 85mm F1.8 S</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Nikon Z</td>
+                        <td>85.0mm</td>
+                        <td>f/1.8</td>
+                        <td>470.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2019-08-28</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-nikon">Nikon</span></td>
+                        <td><strong>Z 35mm F1.8 S</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Nikon Z</td>
+                        <td>35.0mm</td>
+                        <td>f/1.8</td>
+                        <td>370.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-08-23</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sony">Sony</span></td>
+                        <td><strong>FE 85mm F1.8</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Sony E</td>
+                        <td>85.0mm</td>
+                        <td>f/1.8</td>
+                        <td>371.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2017-02-22</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sony">Sony</span></td>
+                        <td><strong>FE 35mm F1.8</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Sony E</td>
+                        <td>35.0mm</td>
+                        <td>f/1.8</td>
+                        <td>280.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2019-07-17</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-canon">Canon</span></td>
+                        <td><strong>RF 70-200mm F2.8 L IS USM</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Canon RF</td>
+                        <td>70.0-200.0mm</td>
+                        <td>f/2.8</td>
+                        <td>1070.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2019-12-12</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-nikon">Nikon</span></td>
+                        <td><strong>Z 70-200mm F2.8 VR S</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Nikon Z</td>
+                        <td>70.0-200.0mm</td>
+                        <td>f/2.8</td>
+                        <td>1360.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2020-01-06</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sony">Sony</span></td>
+                        <td><strong>FE 70-200mm F2.8 GM OSS II</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Sony E</td>
+                        <td>70.0-200.0mm</td>
+                        <td>f/2.8</td>
+                        <td>1045.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2021-11-17</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sigma">Sigma</span></td>
+                        <td><strong>35mm F1.4 DG HSM Art</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon EF</td>
+                        <td>35.0mm</td>
+                        <td>f/1.4</td>
+                        <td>665.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2012-11-01</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sigma">Sigma</span></td>
+                        <td><strong>50mm F1.4 DG HSM Art</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon EF</td>
+                        <td>50.0mm</td>
+                        <td>f/1.4</td>
+                        <td>815.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2014-04-22</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sigma">Sigma</span></td>
+                        <td><strong>85mm F1.4 DG HSM Art</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Canon EF</td>
+                        <td>85.0mm</td>
+                        <td>f/1.4</td>
+                        <td>1130.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2016-09-19</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-sigma">Sigma</span></td>
+                        <td><strong>24-70mm F2.8 DG OS HSM Art</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Canon EF</td>
+                        <td>24.0-70.0mm</td>
+                        <td>f/2.8</td>
+                        <td>1020.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="yes">✓</span></td>
+                        <td>2017-07-06</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-tamron">Tamron</span></td>
+                        <td><strong>28-75mm F2.8 Di III RXD</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Sony E</td>
+                        <td>28.0-75.0mm</td>
+                        <td>f/2.8</td>
+                        <td>550.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-05-17</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-tamron">Tamron</span></td>
+                        <td><strong>35mm F2.8 Di III OSD M1:2</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Sony E</td>
+                        <td>35.0mm</td>
+                        <td>f/2.8</td>
+                        <td>210.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2019-07-11</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-tamron">Tamron</span></td>
+                        <td><strong>70-180mm F2.8 Di III VXD</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Sony E</td>
+                        <td>70.0-180.0mm</td>
+                        <td>f/2.8</td>
+                        <td>810.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2020-05-14</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-fujifilm">Fujifilm</span></td>
+                        <td><strong>XF 35mm F1.4 R</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Fujifilm X</td>
+                        <td>35.0mm</td>
+                        <td>f/1.4</td>
+                        <td>187.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2012-02-18</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-fujifilm">Fujifilm</span></td>
+                        <td><strong>XF 56mm F1.2 R</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Fujifilm X</td>
+                        <td>56.0mm</td>
+                        <td>f/1.2</td>
+                        <td>405.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2014-02-01</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-fujifilm">Fujifilm</span></td>
+                        <td><strong>XF 16-55mm F2.8 R LM WR</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Fujifilm X</td>
+                        <td>16.0-55.0mm</td>
+                        <td>f/2.8</td>
+                        <td>655.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2015-02-05</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-olympus">Olympus</span></td>
+                        <td><strong>M.Zuiko 25mm F1.2 PRO</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Micro Four Thirds</td>
+                        <td>25.0mm</td>
+                        <td>f/1.2</td>
+                        <td>410.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2016-11-18</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-olympus">Olympus</span></td>
+                        <td><strong>M.Zuiko 12-40mm F2.8 PRO</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Micro Four Thirds</td>
+                        <td>12.0-40.0mm</td>
+                        <td>f/2.8</td>
+                        <td>382.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2013-12-20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-panasonic">Panasonic</span></td>
+                        <td><strong>Lumix S 50mm F1.8</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Leica L</td>
+                        <td>50.0mm</td>
+                        <td>f/1.8</td>
+                        <td>300.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2019-08-27</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-panasonic">Panasonic</span></td>
+                        <td><strong>Lumix S 24-70mm F2.8</strong></td>
+                        <td><span class="type-badge type-zoom">Zoom</span></td>
+                        <td>Leica L</td>
+                        <td>24.0-70.0mm</td>
+                        <td>f/2.8</td>
+                        <td>935.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2020-07-21</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-leica">Leica</span></td>
+                        <td><strong>APO-Summicron-SL 50mm F2 ASPH</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Leica L</td>
+                        <td>50.0mm</td>
+                        <td>f/2.0</td>
+                        <td>730.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-09-25</td>
+                    </tr>
+                    <tr>
+                        <td><span class="brand-badge brand-pentax">Pentax</span></td>
+                        <td><strong>HD FA 50mm F1.4 SDM AW</strong></td>
+                        <td><span class="type-badge type-prime">Prime</span></td>
+                        <td>Pentax K</td>
+                        <td>50.0mm</td>
+                        <td>f/1.4</td>
+                        <td>280.0g</td>
+                        <td><span class="yes">✓</span></td>
+                        <td><span class="no">✗</span></td>
+                        <td>2018-04-20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = localStorage.getItem('dashboardLang') || 'zh';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('dashboardLang', lang);
+
+            document.querySelectorAll('[data-zh]').forEach(el => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) {
+                    el.textContent = text;
+                }
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'zh' && btn.textContent === '中文') ||
+                    (lang === 'en' && btn.textContent === 'English')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('load', () => {
+            switchLang(currentLang);
+        });
+    </script>
+</body>
+</html>
